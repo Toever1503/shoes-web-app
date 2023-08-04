@@ -12,6 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: npm ci && npm run build
+        env:
+          FIREBASE_CLI_EXPERIMENTS: ${{ secrets.FIREBASE_CLI_EXPERIMENTS }}
+          NUXT_ENV_APIKEY: ${{ secrets.NUXT_ENV_APIKEY }}
+          NUXT_ENV_AUTHDOMAIN: ${{ secrets.NUXT_ENV_AUTHDOMAIN }}
+          NUXT_ENV_DATABASEURL: ${{ secrets.NUXT_ENV_DATABASEURL }}
+          NUXT_ENV_PROJECTID: ${{ secrets.NUXT_ENV_PROJECTID }}
+          NUXT_ENV_STORAGEBUCKET: ${{ secrets.NUXT_ENV_STORAGEBUCKET }}
+          NUXT_ENV_MESSAGINGSENDERID: ${{ secrets.NUXT_ENV_MESSAGINGSENDERID }}
+          NUXT_ENV_APPID: ${{ secrets.NUXT_ENV_APPID }}
+          NUXT_ENV_MEASUREMENTID: ${{ secrets.NUXT_ENV_MEASUREMENTID }}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
