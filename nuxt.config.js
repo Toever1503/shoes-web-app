@@ -1,4 +1,5 @@
 export default {
+  // target: 'static',
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
 
@@ -31,7 +32,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '~/plugins/plugin.js', mode: 'client' }
+    { src: '~/plugins/plugin.js', mode: 'client' },
+    { src: '~/plugins/firebaseCnf.js', mode: 'client' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

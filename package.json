@@ -2,17 +2,20 @@
   "name": "andshop-vue",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "nuxt",
-    "build": "nuxt build",
+    "build": "nuxt build && nuxt generate",
     "start": "nuxt start",
-    "generate": "nuxt generate"
+    "generate": "nuxt generate",
+    "deploy": "firebase deploy --only hosting:sportshoes"
   },
   "dependencies": {
     "apexcharts": "^3.27.3",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.9.1",
+    "firebase": "^10.1.0",
     "nuxt": "^2.15.3",
     "swiper": "^5.4.5",
     "vue-apexcharts": "^1.6.1",
