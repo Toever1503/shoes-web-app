@@ -28,12 +28,12 @@
                   <!-- Start Cart Table Head -->
                   <thead>
                     <tr>
-                      <th class="product_remove">Remove</th>
-                      <th class="product_thumb">Image</th>
-                      <th class="product_name">Product</th>
-                      <th class="product-price">Price</th>
-                      <th class="product_quantity">Quantity</th>
-                      <th class="product_total">Total</th>
+                      <th class="product_remove">Hành động</th>
+                      <th class="product_thumb">Ảnh</th>
+                      <th class="product_name">Sản phẩm</th>
+                      <th class="product-price">Giá</th>
+                      <th class="product_quantity">Số lượng</th>
+                      <th class="product_total">Tổng tiền</th>
                     </tr>
                   </thead>
                   <!-- End Cart Table Head -->
@@ -131,7 +131,7 @@
           </div>
           <div class="col-lg-4 col-md-12">
             <div class="coupon_code left">
-              <h3>Cart Total</h3>
+              <h3>Tổng đơn hàng</h3>
               <div class="total_cart_inner">
                 <h5>Shipping:</h5>
                 <form action="#!" id="total_cart_form_three">
@@ -167,15 +167,16 @@
               </div>
             </div>
             <div class="coupon_code left bottom_code">
-              <h3>Coupon</h3>
+              <h3>Mã giảm giá</h3>
               <div class="coupon_inner">
-                <p>Enter your coupon code if you have one.</p>
-                <input class="mb-2" placeholder="Coupon code" type="text" />
+                <p>Vui lòng nhập mã giảm giá nếu bạn có.</p>
+                <input v-model="discountCode" class="mb-2" placeholder="Mã code" type="text" />
                 <button
                   type="submit"
                   class="theme-btn-one btn-black-overlay btn_sm"
+                  @click="checkDiscountCode"
                 >
-                  Apply coupon
+                  Kiểm tra
                 </button>
               </div>
             </div>
@@ -192,7 +193,7 @@ export default {
 
   data() {
     return {
-      title: "Cart",
+      title: "Giỏ hàng",
 
       // Breadcrumb Items Data
       breadcrumbItems: [
@@ -201,10 +202,11 @@ export default {
           to: "/",
         },
         {
-          text: "Cart",
+          text: "Giỏ hàng",
           to: "/cart",
         },
       ],
+      discountCode: "",
 
       // Product Quanity Increment/ Decrement Data
       quantity: 1,
@@ -224,5 +226,13 @@ export default {
       ],
     };
   },
+  methods: {
+    checkDiscountCode(){
+      if(!this.discountCode)
+        alert("Vui lòng nhập mã giảm giá!");
+      else
+      alert("discount code: " + this.discountCode)
+    }
+  }
 };
 </script>

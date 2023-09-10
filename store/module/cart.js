@@ -36,6 +36,8 @@ const actions = {
 // mutations
 const mutations = {
   addToCart: (state, payload) => {
+    // alert("begin add item");
+
     const product = state.products.find(item => item.id === payload.id)
     const cartItems = state.cart.find(item => item.id === payload.id)
     const qty = payload.quantity ? payload.quantity : 1

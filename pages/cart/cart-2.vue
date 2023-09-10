@@ -28,12 +28,12 @@
                   <!-- Start Cart Table Head -->
                   <thead>
                     <tr>
-                      <th class="product_thumb">Image</th>
-                      <th class="product_name">Product</th>
-                      <th class="product-price">Price</th>
-                      <th class="product_quantity">Quantity</th>
-                      <th class="product_total">Total</th>
-                      <th class="product_remove">Remove</th>
+                      <th class="product_thumb">Ảnh</th>
+                      <th class="product_name">Sản phẩm</th>
+                      <th class="product-price">Giá</th>
+                      <th class="product_quantity">Số lượng</th>
+                      <th class="product_total">Tổng tiền</th>
+                      <th class="product_remove">Hành động</th>
                     </tr>
                   </thead>
                   <!-- End Cart Table Head -->
@@ -83,19 +83,20 @@
                   </tbody>
                   <tbody v-else>
                     <tr>
-                      <td class="border-0">No Item found!</td>
+                      <td class="border-0">Giỏ hàng hiện chưa có sản phẩm nào!</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
             <div class="coupon_inner_two">
-              <input class="mb-2" placeholder="Coupon code" type="text" />
+              <input v-model="discountCode" class="mb-2" placeholder="Mã code" type="text" />
               <button
                 type="submit"
                 class="theme-btn-one btn-black-overlay btn_sm"
+                @click="checkDiscountCode"
               >
-                Apply coupon
+                Kiểm tra
               </button>
             </div>
           </div>
@@ -105,27 +106,31 @@
               data-aos="fade-up"
               data-aos-delay="400"
             >
-              <h3>Cart Total</h3>
+              <h3>Tổng đơn hàng</h3>
               <div class="coupon_inner">
                 <div class="cart_subtotal">
-                  <p>Subtotal</p>
+                  <p>Tổng tiền</p>
                   <p class="cart_amount">${{ cartTotal }}</p>
                 </div>
                 <div class="cart_subtotal">
-                  <p>Shipping</p>
-                  <p class="cart_amount"><span>Flat Rate:</span> $25.00</p>
+                  <p>Giảm giá</p>
+                  <p class="cart_amount">$0</p>
                 </div>
-                <a href="#">Calculate shipping</a>
+                <div class="cart_subtotal">
+                  <p>Phí ship</p>
+                  <p class="cart_amount">$25.00</p>
+                </div>
+                <!-- <a href="#">Calculate shipping</a> -->
 
                 <div class="cart_subtotal">
-                  <p>Total</p>
+                  <p>Tổng tiền thanh toán</p>
                   <p class="cart_amount">${{ cartTotal + 25 }}</p>
                 </div>
                 <div class="checkout_btn">
                   <nuxt-link
                     to="/my-account/checkout-1"
                     class="theme-btn-one btn-black-overlay btn_sm"
-                    >Proceed to Checkout</nuxt-link
+                    >Đặt hàng</nuxt-link
                   >
                 </div>
               </div>
@@ -144,7 +149,7 @@ export default {
 
   data() {
     return {
-      title: "Cart",
+      title: "Giỏ hàng",
 
       // Breadcrumb Items Data
       breadcrumbItems: [
@@ -153,11 +158,11 @@ export default {
           to: "/",
         },
         {
-          text: "Cart",
+          text: "Giỏ hàng",
           to: "/cart",
         },
       ],
-
+      discountCode: "",
       // Product Quanity Increment/ Decrement Data
       quantity: 1,
     };
@@ -186,6 +191,12 @@ export default {
     removeCartItem: function (product) {
       this.$store.dispatch("cart/removeCartItem", product);
     },
+    checkDiscountCode(){
+      if(!this.discountCode)
+        alert("Vui lòng nhập mã giảm giá!");
+      else
+      alert("discount code: " + this.discountCode)
+    }
   },
 
   // Page head() Title, description for SEO

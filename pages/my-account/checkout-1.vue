@@ -79,12 +79,14 @@
                       <div class="form-group">
                         <label>Số Điện Thoại(*)<span></span></label>
                         <input
-                          type="text"
+                          type="number"
                           v-model="user.phone"
                           id="phone"
                           name="phone"
                           class="form-control"
                           placeholder="0584843998"
+                          :maxlength="10"
+                          oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                           :class="{
                             'is-invalid': submitted && $v.user.phone.$error,
                           }"
@@ -96,7 +98,7 @@
                           <span v-if="!$v.user.phone.required"
                             >Vui lòng nhập số điện thoại!</span
                           >
-                          <!-- <span v-if="!$v.user.phone.phone">Phone is invalid</span> -->
+                          <span v-if="!$v.user.phone.phoneValidator">Phone is invalid</span>
                         </div>
                       </div>
                     </div>
@@ -128,24 +130,28 @@
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                       <div class="form-group">
-                        <label for="province">Tỉnh/TP(*)</label>
+                        <label for="province">Tỉnh/TP(*)
+                        </label>
                         <select
                           class="form-control first_null"
                           v-model="user.province"
                           id="province"
+                          :class="{
+                            'is-invalid': submitted && $v.user.province.$error,
+                          }"
                         >
                           <option value="">Select an option...</option>
                           <option value="AX">usa</option>
                           <option value="AF">Afghanistan</option>
                         </select>
-                        <!-- <div
+                        <div
                           v-if="submitted && $v.user.province.$error"
                           class="invalid-feedback"
                         >
                           <span v-if="!$v.user.province.required"
-                            >Vui lòng chọn Tỉnh/TP!</span
+                            >Vui lòng chọn tỉnh!</span
                           >
-                        </div> -->
+                        </div>
                       </div>
                     </div>
 
@@ -156,19 +162,22 @@
                           class="form-control first_null"
                           v-model="user.district"
                           id="district"
+                          :class="{
+                            'is-invalid': submitted && $v.user.district.$error,
+                          }"
                         >
                           <option value="">Select an option...</option>
                           <option value="AX">Aland Islands</option>
                           <option value="AF">Afghanistan</option>
                         </select>
-                        <!-- <div
+                        <div
                           v-if="submitted && $v.user.district.$error"
                           class="invalid-feedback"
                         >
                           <span v-if="!$v.user.district.required"
                             >Vui lòng chọn Quận/Huyện!</span
                           >
-                        </div> -->
+                        </div>
                       </div>
                     </div>
                     <div class="col-lg-6 col-md-12 col-sm-12 col-12">
@@ -178,19 +187,22 @@
                           class="form-control first_null"
                           v-model="user.ward"
                           id="ward"
+                          :class="{
+                            'is-invalid': submitted && $v.user.ward.$error,
+                          }"
                         >
                           <option value="">Select an option...</option>
                           <option value="AX">Aland Islands</option>
                           <option value="AF">Afghanistan</option>
                         </select>
-                        <!-- <div
+                        <div
                           v-if="submitted && $v.user.ward.$error"
                           class="invalid-feedback"
                         >
                           <span v-if="!$v.user.ward.required"
                             >Vui lòng chọn Phường/Xã!</span
                           >
-                        </div> -->
+                        </div>
                       </div>
                     </div>
 
@@ -203,15 +215,18 @@
                           v-model="user.faddress"
                           id="faddress"
                           placeholder="Địa chỉ cụ thể để nhận hàng.."
+                          :class="{
+                            'is-invalid': submitted && $v.user.faddress.$error,
+                          }"
                         />
-                        <!-- <div
-                          v-if="submitted && $v.user.faddress?.$error"
+                        <div
+                          v-if="submitted && $v.user.faddress.$error"
                           class="invalid-feedback"
                         >
                           <span v-if="!$v.user.faddress.required"
                             >Vui lòng điền số nhà!</span
                           >
-                        </div> -->
+                        </div>
                       </div>
                     </div>
 
@@ -234,6 +249,7 @@
                           type="checkbox"
                           class="form-check-input"
                           id="materialUnchecked"
+                          v-model="user.isSavedAddress"
                         />
                         <label class="form-check-label" for="materialUnchecked"
                           >Lưu vào danh sách địa chỉ của tôi</label
@@ -370,12 +386,15 @@
 
 <script>
 import { required, email } from "vuelidate/lib/validators";
+
+
+const phoneValidator = (value) => /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(value);
 export default {
   name: "checkout-1",
 
   data() {
     return {
-      title: "Checkout",
+      title: "Thông tin đặt hàng",
       // Breadcrumb Items Data
       breadcrumbItems: [
         {
@@ -383,7 +402,7 @@ export default {
           to: "/",
         },
         {
-          text: "Checkout",
+          text: "Thông tin đặt hàng",
           to: "/my-account/checkout",
         },
       ],
@@ -392,12 +411,13 @@ export default {
         fname: "f",
         lname: "s",
         email: "",
-        phone: "ff",
+        phone: "0981234567",
         province: "",
         district: "",
         ward: "",
         faddress: "",
         messages: "",
+        isSavedAddress: false
       },
       submitted: false,
     };
@@ -406,12 +426,12 @@ export default {
     user: {
       fname: { required },
       lname: { required },
-      phone: { required },
+      phone: { required, phoneValidator },
       email: { email },
-      // province: { required },
-      // district: { required },
-      // ward: { required },
-    //   faddress: { required },
+      province: { required },
+      district: { required },
+      ward: { required },
+      faddress: { required },
     },
   },
   mounted() {

@@ -35,7 +35,7 @@
                   <nav>
                     <ul>
                       <li class="has-dropdown">
-                        <a href="#">Home <i class="fa fa-angle-down"></i></a>
+                        <a href="/shop/shop-4">Sản phẩm <i class="fa fa-angle-down"></i></a>
                         <!-- Sub Menu -->
                         <ul class="sub-menu">
                           <li><nuxt-link to="/">Fashion</nuxt-link></li>
@@ -53,8 +53,11 @@
                           </li>
                         </ul>
                       </li>
+                      <li>
+                        <nuxt-link to="/shop/shop-4">Tra cứu đơn</nuxt-link>
+                      </li>
 
-                      <li class="has-dropdown has-megaitem">
+                      <li  v-if="false" class="has-dropdown has-megaitem">
                         <a href="#">Shop <i class="fa fa-angle-down"></i></a>
                         <!-- Mega Menu -->
                         <div class="mega-menu">
@@ -186,7 +189,7 @@
                           </ul>
                         </div>
                       </li>
-                      <li class="has-dropdown">
+                      <li v-if="false" class="has-dropdown">
                         <a href="#">Blog <i class="fa fa-angle-down"></i></a>
                         <!-- Sub Menu -->
                         <ul class="sub-menu">
@@ -270,7 +273,7 @@
                     action-hover-color--golden
                   "
                 >
-                  <li>
+                  <li v-if="false">
                     <a v-b-toggle.offcanvas-wishlish class="offcanvas-toggle">
                       <i class="far fa-heart"></i>
                       <span class="item-count">{{ wishlist.length }}</span>

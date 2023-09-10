@@ -25,12 +25,12 @@
                                     <!-- Start Wishlist Table Head -->
                                     <thead>
                                         <tr>
-                                            <th class="product_remove">Remove</th>
-                                            <th class="product_thumb">Image</th>
-                                            <th class="product_name">Product</th>
-                                            <th class="product-price">Price</th>
+                                            <th class="product_remove">Hành động</th>
+                                            <th class="product_thumb">Ảnh</th>
+                                            <th class="product_name">Sản phẩm</th>
+                                            <th class="product-price">Giá</th>
                                             <th class="product_stock">Stock Status</th>
-                                            <th class="product_addcart">Add To Cart</th>
+                                            <th class="product_addcart">Thêm vào giỏ</th>
                                         </tr>
                                     </thead> <!-- End Cart Table Head -->
                                     <tbody v-if="wishlist.length"> 
@@ -52,7 +52,7 @@
                                         </tr> 
                                     </tbody>
                                     <tbody v-else>
-                                        <tr><td class="border-0">No Item found!</td></tr>
+                                        <tr><td class="border-0">Giỏ hàng hiện chưa có sản phẩm nào!</td></tr>
                                     </tbody>
                                 </table>
                             </div>
