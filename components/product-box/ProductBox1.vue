@@ -4,12 +4,12 @@
       <div class="thumb">
         <nuxt-link :to="{ path: '/product/' + product.id }" class="image">
           <img
-            :src="getImageUrl(imageSrc ? imageSrc : product.images[0].src)"
-            :alt="product.title"
+            :src="product.anhChinh.url"
+            :alt="product.tieuDe"
           />
           <img
-            :src="getImageUrl(imageSrc ? imageSrc : product.images[1].src)"
-            :alt="product.title"
+            :src="product.anhChinh.url"
+            :alt="product.tieuDe"
             class="hover-image"
           />
         </nuxt-link>
@@ -57,11 +57,13 @@
             product.title
           }}</nuxt-link>
         </h5>
-        <span class="price">
-          <span class="new" v-if="product.discount"
-            >${{ discountedPrice(product) }}</span
+        <span class="price-p" style="grid">
+          <p class="new">{{ product.giaMoi }} vnd</p>
+          <p class="new"
+            >
+            <del>{{product.giaCu}}</del>
+             vnd</p
           >
-          <span class="new" v-else>${{ product.price }}</span>
         </span>
       </div>
 
@@ -266,11 +268,12 @@ export default {
   },
   mounted() {
     // For displaying default color and size on pageload
-    this.uniqColor = this.product.variants[0].color;
-    this.sizeVariant(this.product.variants[0].image_id);
+    // this.uniqColor = this.product.variants[0].color;
+    // this.sizeVariant(this.product.variants[0].image_id);
+
     // Active default color
-    this.activeColor = this.uniqColor;
-    this.changeSizeVariant(this.product.variants[0].size);
+    // this.activeColor = this.uniqColor;
+    // this.changeSizeVariant(this.product.variants[0].size);
   },
 
   methods: {
@@ -317,11 +320,11 @@ export default {
     // Display Unique color
     Color(variants) {
       const uniqColor = [];
-      for (let i = 0; i < Object.keys(variants).length; i++) {
-        if (uniqColor.indexOf(variants[i].color) === -1) {
-          uniqColor.push(variants[i].color);
-        }
-      }
+      // for (let i = 0; i < Object.keys(variants).length; i++) {
+      //   if (uniqColor.indexOf(variants[i].color) === -1) {
+      //     uniqColor.push(variants[i].color);
+      //   }
+      // }
       return uniqColor;
     },
     // Change Size Variant

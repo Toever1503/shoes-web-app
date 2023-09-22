@@ -115,7 +115,7 @@
         <div class="row">
           <div class="col-lg-12">
             <div class="center_heading">
-              <h2>Hot Product</h2>
+              <h2>Sản phẩm được yêu thích</h2>
               <p>Mauris luctus nisi sapien tristique dignissim ornare</p>
             </div>
           </div>
@@ -313,6 +313,7 @@ import ProductBox1 from "~/components/product-box/ProductBox1";
 import Timer from "../components/widgets/Timer";
 import InstagramArea from "../components/instagram/InstagramArea";
 import BlogItem1 from "~/components/blog/BlogItem1";
+import ProductService from "../services/ProductService";
 
 export default {
   name: "Home",
@@ -405,6 +406,7 @@ export default {
       products: [],
       category: [],
       cartproduct: {},
+      productslist: [],
 
       compareproduct: {},
 
@@ -447,35 +449,47 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      productslist: (state) => state.products.productslist,
-    }),
+    // ...mapState({
+    //   productslist: (state) => state.products.productslist,
+    // }),
   },
   mounted() {
     // For scroll page top for every Route
     window.scrollTo(0, 0);
 
-    this.productsArray();
+    ProductService.locSp(undefined, 0, 10)
+      .then((res) => {
+        console.log("product data: ", res.data);
+        this.productslist = res.data.content;
+        this.productsArray();
+      })
+      .catch((err) => {
+        console.log("error: ", err);
+      });
+
   },
   methods: {
     productsArray: function () {
       this.productslist.map((item) => {
-        if (item.type === "fashion") {
-          this.products.push(item);
-          item.collection.map((i) => {
-            const index = this.category.indexOf(i);
-            if (index === -1) this.category.push(i);
-          });
-        }
+        // if (item.type === "fashion") {
+        //   this.products.push(item);
+        //   item.collection.map((i) => {
+        //     const index = this.category.indexOf(i);
+        //     if (index === -1) this.category.push(i);
+        //   });
+        // }
+        this.products.push(item)
       });
     },
     // For Product Tab
     getCategoryProduct(collection) {
-      return this.products.filter((item) => {
-        if (item.collection.find((i) => i === collection)) {
-          return item;
-        }
-      });
+      // return this.products.filter((item) => {
+      //   if (item.collection.find((i) => i === collection)) {
+      //     return item;
+      //   }
+      // });
+
+      return this.productslist;
     },
 
     // Product added Alert / notificaion
