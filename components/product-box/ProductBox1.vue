@@ -3,10 +3,7 @@
     <div class="product_wrappers_one">
       <div class="thumb">
         <nuxt-link :to="{ path: '/product/' + product.id }" class="image">
-          <img
-            :src="product.anhChinh.url"
-            :alt="product.tieuDe"
-          />
+          <img :src="product.anhChinh.url" :alt="product.tieuDe" />
           <img
             :src="product.anhChinh.url"
             :alt="product.tieuDe"
@@ -35,6 +32,7 @@
             <i class="fas fa-expand"></i>
           </button>
           <button
+            v-if="false"
             @click="addToCompare(product)"
             class="action compare"
             title="Compare"
@@ -42,28 +40,35 @@
             <i class="fas fa-exchange-alt"></i>
           </button>
         </div>
-        <button
+        <!-- <button
           @click="addToCart(product)"
           class="add-to-cart offcanvas-toggle"
           title="Add To Cart"
         >
           Add To Cart
+        </button> -->
+
+        <button
+          @click="toggleModal"
+          class="add-to-cart offcanvas-toggle"
+          title="Add To Cart"
+        >
+          Xem nhanh
         </button>
       </div>
 
       <div class="content">
         <h5 class="title text-capitalize">
           <nuxt-link :to="{ path: '/product/' + product.id }">{{
-            product.title
+            product.tieuDe
           }}</nuxt-link>
         </h5>
         <span class="price-p" style="grid">
           <p class="new">{{ product.giaMoi }} vnd</p>
-          <p class="new"
-            >
-            <del>{{product.giaCu}}</del>
-             vnd</p
-          >
+          <p class="new">
+            <del>{{ product.giaCu }}</del>
+            vnd
+          </p>
         </span>
       </div>
 
@@ -95,12 +100,12 @@
                     <div class="swiper-wrapper">
                       <div
                         class="swiper-slide"
-                        v-for="(imag, index) in product.images"
+                        v-for="(imag, index) in product.anhPhu"
                         :key="index"
                       >
                         <img
-                          :src="getImageUrl(imag.src)"
-                          :id="imag.image_id"
+                          :src="imag.url"
+                          :id="imag.url"
                           class="img-fluid bg-img"
                           alt="imag.alt"
                         />
@@ -111,7 +116,7 @@
               </div>
               <div class="col-lg-7 col-md-6 col-sm-12 col-12">
                 <div class="modal_product_content_one">
-                  <h3 class="text-capitalize">{{ product.title }}</h3>
+                  <h3 class="text-capitalize">{{ product.tieuDe }}</h3>
                   <div v-if="product.rating == 5" class="reviews_rating">
                     <i class="fas fa-star active"></i>
                     <i class="fas fa-star active"></i>
@@ -156,37 +161,51 @@
                     <span>No Rating</span>
                   </div>
 
-                  <h4 v-if="product.discount">
-                    ${{ discountedPrice(product) }}
-                    <del>${{ product.price }}</del>
+                  <h4>
+                    {{ product.giaMoi }}vnd
+                    <del>${{ product.giaCu }}vnd</del>
                   </h4>
-                  <h4 v-else>${{ product.price }}</h4>
 
-                  <p>{{ product.description }}</p>
-                  <div class="variable-single-item">
-                    <span>Color</span>
-                    <ul class="color-variant d-flex">
-                      <li
-                        v-bind:class="{ active: activeColor == variant }"
-                        v-for="(variant, variantIndex) in Color(
-                          product.variants
-                        )"
-                        :key="variantIndex"
-                      >
-                        <a
-                          :class="[variant]"
-                          v-bind:style="{ 'background-color': variant }"
-                          @click="
-                            sizeVariant(
-                              product.variants[variantIndex].image_id,
-                              variantIndex,
-                              variant
-                            )
-                          "
-                        ></a>
-                      </li>
-                    </ul>
+                  <p>{{ product.moTa }}</p>
+
+                  <div class="flex" style="display: flex; gap: 20px">
+                    <div
+                      class="variable-single-item"
+                      v-if="
+                        product.loaiBienThe == 'BOTH' ||
+                        product.loaiBienThe == 'COLOR'
+                      "
+                    >
+                      <span>Màu</span>
+                      <select style="width: 70px;">
+                        <option
+                          :key="index"
+                          v-for="(item, index) in product.giaTri1List"
+                        >
+                          {{ item.giaTri }}
+                        </option>
+                      </select>
+                    </div>
+
+                    <div
+                      class="variable-single-item"
+                      v-if="
+                        product.loaiBienThe == 'BOTH' ||
+                        product.loaiBienThe == 'SIZE'
+                      "
+                    >
+                      <span>Kích thước</span>
+                      <select style="width: 70px;">
+                        <option
+                          :key="index"
+                          v-for="(item, index) in product.giaTri2List"
+                        >
+                          {{ item.giaTri }}
+                        </option>
+                      </select>
+                    </div>
                   </div>
+
                   <form id="product_count_form_one">
                     <div class="product_count_one">
                       <b-form-spinbutton
@@ -201,7 +220,7 @@
                         href="javascript:void(0)"
                         @click="addToCart(product)"
                         class="theme-btn-one btn-black-overlay btn_sm"
-                        >Add To Cart</a
+                        >Thêm vào giỏ</a
                       >
                     </div>
                   </form>
@@ -270,7 +289,6 @@ export default {
     // For displaying default color and size on pageload
     // this.uniqColor = this.product.variants[0].color;
     // this.sizeVariant(this.product.variants[0].image_id);
-
     // Active default color
     // this.activeColor = this.uniqColor;
     // this.changeSizeVariant(this.product.variants[0].size);

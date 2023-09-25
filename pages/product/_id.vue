@@ -24,16 +24,16 @@
           <div class="col-lg-4">
             <div class="product_single_one_img">
               <div v-swiper:mySwiper="swiperOption" ref="mySwiper">
-                <div class="swiper-wrapper">
+                <div class="swiper-wrapper" v-if="productDetail.anhPhu">
                   <div
                     class="swiper-slide"
-                    v-for="(product, index) in getDetail.images"
+                    v-for="(product, index) in productDetail.anhPhu"
                     :key="index"
                   >
                     <inner-image-zoom
-                      :src="getImageUrl(product.src)"
-                      :id="product.image_id"
-                      :zoomSrc="getImageUrl(product.src)"
+                      :src="product.url"
+                      :id="product.id"
+                      :zoomSrc="product.url"
                       moveType="drag"
                       className="product-image-zoom"
                     />
@@ -90,46 +90,51 @@
                   <span>No Rating</span>
                 </div>
 
-                <h4 v-if="getDetail.discount">
-                  ${{ discountedPrice(getDetail) }}
-                  <del>${{ getDetail.price }}</del>
+                <h4>
+                  {{ getDetail.giaMoi }}vnd
+                  <del>{{ getDetail.giaCu }}vnd</del>
                 </h4>
-                <h4 v-else>${{ getDetail.price }}</h4>
-                <p>{{ getDetail.description }}</p>
-                <div class="customs_selects">
-                  <select name="product" class="customs_sel_box">
-                    <option value="size">Size</option>
-                    <option value="xl">XL</option>
-                    <option value="small">S</option>
-                    <option value="medium">M</option>
-                    <option value="large">L</option>
+
+                <p>{{ getDetail.moTa }}</p>
+
+                <div
+                  class="variable-single-item"
+                  v-if="
+                    productDetail.loaiBienThe == 'BOTH' ||
+                    productDetail.loaiBienThe == 'COLOR'
+                  "
+                >
+                  <span>Màu</span>
+
+                  <select style="width: 70px">
+                    <option
+                      :key="index"
+                      v-for="(item, index) in productDetail.giaTri1List"
+                    >
+                      {{ item.giaTri }}
+                    </option>
                   </select>
                 </div>
-                <div class="variable-single-item">
-                  <span>Color</span>
 
-                  <ul class="color-variant d-flex">
-                    <li
-                      v-bind:class="{ active: activeColor == variant }"
-                      v-for="(variant, variantIndex) in Color(
-                        getDetail.variants
-                      )"
-                      :key="variantIndex"
+                <div
+                  class="variable-single-item"
+                  v-if="
+                    productDetail.loaiBienThe == 'BOTH' ||
+                    productDetail.loaiBienThe == 'SIZE'
+                  "
+                >
+                  <span>Kích thước</span>
+
+                  <select style="width: 70px">
+                    <option
+                      :key="index"
+                      v-for="(item, index) in productDetail.giaTri2List"
                     >
-                      <a
-                        :class="[variant]"
-                        v-bind:style="{ 'background-color': variant }"
-                        @click="
-                          sizeVariant(
-                            getDetail.variants[variantIndex].image_id,
-                            variantIndex,
-                            variant
-                          )
-                        "
-                      ></a>
-                    </li>
-                  </ul>
+                      {{ item.giaTri }}
+                    </option>
+                  </select>
                 </div>
+
                 <form id="product_count_form_two">
                   <div class="product_count_one">
                     <b-form-spinbutton
@@ -386,7 +391,7 @@
       </div>
     </section>
 
-    <RelatedProducts :productType="productType" :productId="productId" />
+    <!-- <RelatedProducts :productType="productType" :productId="productId" /> -->
 
     <!-- Instagram Arae -->
     <InstagramArea />
@@ -397,6 +402,7 @@
 import ProductBox1 from "~/components/product-box/ProductBox1";
 import InstagramArea from "~/components/instagram/InstagramArea";
 import RelatedProducts from "~/components/widgets/RelatedProducts";
+import ProductService from "../../services/ProductService";
 
 export default {
   name: "product-single",
@@ -433,14 +439,13 @@ export default {
         spaceBetween: 20,
         freeMode: true,
       },
+      productDetail: {},
     };
   },
 
   computed: {
     getDetail: function () {
-      return this.$store.getters["products/getProductById"](
-        this.$route.params.id
-      );
+      return this.productDetail;
     },
     swiper() {
       return this.$refs.mySwiper.swiper;
@@ -449,13 +454,20 @@ export default {
 
   mounted() {
     // For displaying default color and size on pageload
-    this.uniqColor = this.getDetail.variants[0].color;
-    this.sizeVariant(this.getDetail.variants[0].image_id);
+    // this.uniqColor = this.getDetail.variants[0].color;
+    // this.sizeVariant(this.getDetail.variants[0].image_id);
     // Active default color
-    this.activeColor = this.uniqColor;
-    this.changeSizeVariant(this.getDetail.variants[0].size);
-    this.relatedProducts();
-
+    // this.activeColor = this.uniqColor;
+    // this.changeSizeVariant(this.getDetail.variants[0].size);
+    // this.relatedProducts();
+    ProductService.chiTietSp(this.$route.params.id)
+      .then((res) => {
+        console.log("product data: ", res.data);
+        this.productDetail = res.data;
+      })
+      .catch((err) => {
+        console.log("error: ", err);
+      });
     // For scroll page top for every Route
     window.scrollTo(0, 0);
   },
@@ -490,11 +502,11 @@ export default {
     // Display Unique color
     Color(variants) {
       const uniqColor = [];
-      for (let i = 0; i < Object.keys(variants).length; i++) {
-        if (uniqColor.indexOf(variants[i].color) === -1) {
-          uniqColor.push(variants[i].color);
-        }
-      }
+      // for (let i = 0; i < Object.keys(variants).length; i++) {
+      //   if (uniqColor.indexOf(variants[i].color) === -1) {
+      //     uniqColor.push(variants[i].color);
+      //   }
+      // }
       return uniqColor;
     },
     // Change Size Variant
@@ -530,4 +542,4 @@ export default {
     };
   },
 };
-</script> 
+</script>
