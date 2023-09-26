@@ -640,11 +640,12 @@
                   :to="{ path: '/product/' + product.id }"
                   class="offcanvas-cart-item-image-link"
                 >
-                  <img
+                need fix
+                  <!-- <img
                     :src="getImageUrl(product.images[0].src)"
                     alt="img"
                     class="offcanvas-cart-image"
-                  />
+                  /> -->
                 </nuxt-link>
                 <div class="offcanvas-cart-item-content">
                   <nuxt-link
@@ -899,7 +900,8 @@ export default {
   methods: {
     // Image Url
     getImageUrl(path) {
-      return require("@/assets/img/product-image/" + path);
+      // return require("@/assets/img/product-image/" + path);
+      return '';
     },
 
     // Discount Price

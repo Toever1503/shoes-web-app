@@ -3,6 +3,9 @@ import products from '../../data/products'
 const state = {
   products: products.data,
   cart: []
+};
+if (!localStorage.getItem('cart')) {
+  localStorage.setItem('cart', JSON.stringify([]));
 }
 // getters
 const getters = {
@@ -15,9 +18,9 @@ const getters = {
   //       }, 0 )
   // },
   cartTotalAmount: (state) => {
-    return state.cart.reduce( (total, product) => {
-      return total + ( (product.price - ( product.price * product.discount / 100) ) * product.quantity)
-      }, 0 )
+    return state.cart.reduce((total, product) => {
+      return total + ((product.price - (product.price * product.discount / 100)) * product.quantity)
+    }, 0)
   }
 }
 // actions
@@ -29,27 +32,28 @@ const actions = {
     context.commit('updateCartQuantity', payload)
   },
   removeCartItem: (context, payload) => {
-      context.commit('removeCartItem', payload)
+    context.commit('removeCartItem', payload)
   }
 }
 
 // mutations
 const mutations = {
   addToCart: (state, payload) => {
-    // alert("begin add item");
+    console.log("begin add item", payload);
 
-    const product = state.products.find(item => item.id === payload.id)
-    const cartItems = state.cart.find(item => item.id === payload.id)
-    const qty = payload.quantity ? payload.quantity : 1
-    if (cartItems) {
-      cartItems.quantity = qty
+    const cartItem = state.cart.find(item => item.id === payload.id);
+    if (cartItem) {
+      cartItem.quantity = payload.quantity
     } else {
       state.cart.push({
-        ...product,
-        quantity: qty
-      })
-    }
-    product.stock--
+        id: payload.id,
+        qty: payload.quantity
+      });
+    };
+
+    // check logged user
+    // if (!localStorage.getItem('loggedUser'))
+    //   localStorage.setItem('cart', JSON.stringify(state.cart));
   },
   updateCartQuantity: (state, payload) => {
     // Calculate Product Stock Counts
@@ -75,8 +79,8 @@ const mutations = {
     })
   },
   removeCartItem: (state, payload) => {
-      const index = state.cart.indexOf(payload)
-      state.cart.splice(index, 1)
+    const index = state.cart.indexOf(payload)
+    state.cart.splice(index, 1)
   }
 
 }

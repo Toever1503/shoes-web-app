@@ -95,57 +95,80 @@
                   <del>{{ getDetail.giaCu }}vnd</del>
                 </h4>
 
-                <p>{{ getDetail.moTa }}</p>
+                <!-- <p>{{ getDetail.moTa }}</p> -->
 
-                <div
-                  class="variable-single-item"
-                  v-if="
-                    productDetail.loaiBienThe == 'BOTH' ||
-                    productDetail.loaiBienThe == 'COLOR'
-                  "
-                >
-                  <span>Màu</span>
+                <div class="d-flex">
+                  <div
+                    class="variable-single-item mr-5"
+                    v-if="
+                      productDetail.loaiBienThe == 'BOTH' ||
+                      productDetail.loaiBienThe == 'COLOR'
+                    "
+                  >
+                    <span>Màu</span>
 
-                  <select style="width: 70px">
-                    <option
-                      :key="index"
-                      v-for="(item, index) in productDetail.giaTri1List"
+                    <select
+                      v-model="variationVal1"
+                      style="width: 110px"
+                      @change="onThayDoiBienTheMau"
                     >
-                      {{ item.giaTri }}
-                    </option>
-                  </select>
+                      <option value="">Chọn màu</option>
+                      <option
+                        :key="index"
+                        :value="item.id"
+                        v-for="(item, index) in variation1List"
+                      >
+                        {{ item.giaTri }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div
+                    class="variable-single-item"
+                    v-if="
+                      productDetail.loaiBienThe == 'BOTH' ||
+                      productDetail.loaiBienThe == 'SIZE'
+                    "
+                  >
+                    <span>Size</span>
+
+                    <select
+                      v-model="variationVal2"
+                      style="width: 100px"
+                      @change="onThayDoiBienTheSize"
+                    >
+                      <option value="">Chọn size</option>
+                      <option
+                        :key="index"
+                        :value="item.id"
+                        v-for="(item, index) in variation2List"
+                      >
+                        {{ item.giaTri }}
+                      </option>
+                    </select>
+                  </div>
                 </div>
 
-                <div
-                  class="variable-single-item"
-                  v-if="
-                    productDetail.loaiBienThe == 'BOTH' ||
-                    productDetail.loaiBienThe == 'SIZE'
-                  "
+                <form
+                  id="product_count_form_two"
+                  class="d-flex justify-center align-items-center"
                 >
-                  <span>Kích thước</span>
-
-                  <select style="width: 70px">
-                    <option
-                      :key="index"
-                      v-for="(item, index) in productDetail.giaTri2List"
-                    >
-                      {{ item.giaTri }}
-                    </option>
-                  </select>
-                </div>
-
-                <form id="product_count_form_two">
-                  <div class="product_count_one">
+                  <div class="product_count_one mr-3">
                     <b-form-spinbutton
                       id="sb-inline"
                       min="1"
-                      max="100"
+                      :max="variationStockCnt"
                       v-model="quantity"
                       inline
                       class="border-0"
                     ></b-form-spinbutton>
                   </div>
+                  <span v-if="variationStockCnt > 0">
+                    {{ variationStockCnt }} sản phẩm có sẵn
+                  </span>
+                  <span v-else>
+                    <span> Sản phẩm hiện đang hết hàng </span>
+                  </span>
                 </form>
                 <div class="links_Product_areas">
                   <ul>
@@ -158,7 +181,8 @@
                         <i class="far fa-heart mr-1"></i>Add To Wishlist
                       </button>
                     </li>
-                    <li>
+
+                    <!-- <li>
                       <button
                         @click="addToCompare(getDetail)"
                         class="action compare bg-transparent"
@@ -166,13 +190,13 @@
                       >
                         <i class="fas fa-exchange-alt mr-1"></i>Add To Compare
                       </button>
-                    </li>
+                    </li> -->
                   </ul>
                   <button
                     @click="addToCart(getDetail)"
                     class="theme-btn-one btn-black-overlay btn_sm"
                   >
-                    Add To Cart
+                    Thêm vào giỏ
                   </button>
                 </div>
               </div>
@@ -185,40 +209,16 @@
               <b-tabs>
                 <b-tab title="Description" active id="description">
                   <div class="product_description">
-                    <p>
-                      Curabitur arcu erat, accumsan id imperdiet et, porttitor
-                      at sem. Vestibulum ac diam sit amet quam vehicula
-                      elementum sed sit amet dui. Sed porttitor lectus nibh.
-                      Vivamus magna justo, lacinia eget consectetur sed,
-                      convallis at tellus. Sed porttitor lectus nibh. Donec
-                      sollicitudin molestie malesuada. Vivamus magna justo,
-                      lacinia eget consectetur sed, convallis at tellus.
-                      Curabitur arcu erat, accumsan id imperdiet et, porttitor
-                      at sem.
-                    </p>
-                    <ul>
-                      <li>Vivamus magna justo, lacinia eget consectetur sed</li>
-                      <li>Curabitur aliquet quam id dui posuere blandit</li>
-                      <li>
-                        Mauris blandit aliquet elit, eget tincidunt nibh
-                        pulvinar
-                      </li>
-                    </ul>
-                    <p>
-                      Donec sollicitudin molestie malesuada. Cras ultricies
-                      ligula sed magna dictum porta. Mauris blandit aliquet
-                      elit, eget tincidunt nibh pulvinar a. Nulla porttitor
-                      accumsan tincidunt. Cras ultricies ligula sed magna dictum
-                      porta. Curabitur arcu erat, accumsan id imperdiet et,
-                      Pellentesque in ipsum id orci porta dapibus. Lorem ipsum
-                      dolor sit amet, consectetur adipiscing elit. porttitor at
-                      sem. Quisque velit nisi, pretium ut lacinia in, elementum
-                      id enim.
-                    </p>
+                    {{ getDetail.moTa }}
                   </div>
                 </b-tab>
 
-                <b-tab title="Additional Information" id="additional">
+                <!-- disable -->
+                <b-tab
+                  title="Additional Information"
+                  id="additional"
+                  v-if="false"
+                >
                   <div class="product_additional">
                     <ul>
                       <li>Weight: <span>400 g</span></li>
@@ -439,7 +439,13 @@ export default {
         spaceBetween: 20,
         freeMode: true,
       },
+      // custom by shiki
       productDetail: {},
+      variation1List: [],
+      variation2List: [],
+      variationVal1: "",
+      variationVal2: "",
+      variationStockCnt: 0,
     };
   },
 
@@ -464,6 +470,9 @@ export default {
       .then((res) => {
         console.log("product data: ", res.data);
         this.productDetail = res.data;
+        this.variation1List = this.productDetail.giaTri1List;
+        this.variation2List = this.productDetail.giaTri2List;
+        this.variationStockCnt = this.productDetail.soLuongKho;
       })
       .catch((err) => {
         console.log("error: ", err);
@@ -483,7 +492,51 @@ export default {
     // add to cart
     addToCart: function (product, qty) {
       product.quantity = qty || 1;
-      this.$store.dispatch("cart/addToCart", product);
+      console.log("add cart: ", this.quantity);
+      
+      if (this.productDetail.loaiBienThe == "BOTH") {
+        if (!this.variationVal1 || !this.variationVal2) {
+          alert("Vui lòng chọn phân loại sản phẩm!");
+          return;
+        }
+        const productVariation = this.productDetail.bienTheDTOS.find(
+          (item) =>
+            item.giatri1 == this.variationVal1 &&
+            item.giatri2 == this.variationVal2
+        );
+        if (productVariation) {
+          console.log("add variation: ", productVariation);
+          this.$store.dispatch("cart/addToCart", {id:productVariation.id, quantity: this.quantity});
+        }
+
+      } else {
+        if (this.productDetail.loaiBienThe == "COLOR") {
+          if (!this.variationVal1) {
+            alert("Vui lòng chọn phân loại sản phẩm!");
+            return;
+          }
+
+          const productVariation = this.productDetail.bienTheDTOS.find(
+            (item) => item.giatri1 == this.variationVal1
+          );
+          if (productVariation) {
+            console.log("add variation: ", productVariation);
+            this.$store.dispatch("cart/addToCart", {id:productVariation.id, quantity: this.quantity});
+          }
+        } else {
+          if (!this.variationVal2) {
+            alert("Vui lòng chọn phân loại sản phẩm!");
+            return;
+          }
+          const productVariation = this.productDetail.bienTheDTOS.find(
+            (item) => item.giatri2 == this.variationVal2
+          );
+          if (productVariation) {
+            console.log("add variation: ", productVariation);
+            this.$store.dispatch("cart/addToCart", {id:productVariation.id, quantity: this.quantity});
+          }
+        }
+      }
     },
     // add to wishlist
     addToWishlist: function (product) {
@@ -525,6 +578,75 @@ export default {
           this.size.push(item.size);
         }
       });
+    },
+    // custom func
+    onThayDoiBienTheMau(event) {
+      console.log("variation 1: ", event.target.value);
+      if (!event.target.value) {
+        this.variation2List = this.productDetail.giaTri2List;
+        this.variationStockCnt = this.productDetail.soLuongKho;
+        return;
+      }
+
+      if (this.productDetail.loaiBienThe == "BOTH") {
+        const variationInfo = this.productDetail.giaTri1List.find(
+          (item) => item.id == event.target.value
+        );
+        this.variation2List = variationInfo.bienThe2;
+
+        // find stock in this variation
+        if (this.variationVal2) {
+          const productVariation = this.productDetail.bienTheDTOS.find(
+            (item) =>
+              item.giatri2 == this.variationVal2 &&
+              item.giatri1 == event.target.value
+          );
+          console.log("product vatiation: ", productVariation);
+          if (productVariation)
+            this.variationStockCnt = productVariation.soLuong;
+        }
+        // end find stock in this variation
+      } else if (this.productDetail.loaiBienThe == "COLOR") {
+        const productVariation = this.productDetail.bienTheDTOS.find(
+          (item) => item.giatri1 == event.target.value
+        );
+        console.log("product vatiation: ", productVariation);
+        if (productVariation) this.variationStockCnt = productVariation.soLuong;
+      }
+    },
+    onThayDoiBienTheSize(event) {
+      console.log("variation 2: ", event.target.value);
+
+      if (!event.target.value) {
+        this.variation1List = this.productDetail.giaTri1List;
+        this.variationStockCnt = this.productDetail.soLuongKho;
+        return;
+      }
+      if (this.productDetail.loaiBienThe == "BOTH") {
+        const variationInfo = this.productDetail.giaTri2List.find(
+          (item) => item.id == event.target.value
+        );
+        this.variation1List = variationInfo.bienThe2;
+
+        // find stock in this variation
+        if (this.variationVal1) {
+          const productVariation = this.productDetail.bienTheDTOS.find(
+            (item) =>
+              item.giatri1 == this.variationVal1 &&
+              item.giatri2 == event.target.value
+          );
+          console.log("product vatiation: ", productVariation);
+          if (productVariation)
+            this.variationStockCnt = productVariation.soLuong;
+        }
+        // end find stock in this variation
+      } else if (this.productDetail.loaiBienThe == "SIZE") {
+        const productVariation = this.productDetail.bienTheDTOS.find(
+          (item) => item.giatri2 == event.target.value
+        );
+        console.log("product vatiation: ", productVariation);
+        if (productVariation) this.variationStockCnt = productVariation.soLuong;
+      }
     },
   },
 
