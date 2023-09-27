@@ -443,7 +443,7 @@
       right
     >
       <div class="offcanvas-add-cart-wrapper">
-        <h4 class="offcanvas-title">Shopping Cart</h4>
+        <h4 class="offcanvas-title">Giỏ hàng</h4> 
         <div v-if="cart.length">
           <ul class="offcanvas-cart">
             <li
@@ -453,32 +453,30 @@
             >
               <div class="offcanvas-cart-item-block">
                 <nuxt-link
-                  :to="{ path: '/product/' + item.id }"
+                  :to="{ path: '/product/' + item.productId }"
                   class="offcanvas-cart-item-image-link"
                 >
+                <!-- :src="getImageUrl(item.images[0].src)" -->
                   <img
-                    :src="getImageUrl(item.images[0].src)"
+                  :src="item.anh"
                     alt="img"
                     class="offcanvas-cart-image"
                   />
                 </nuxt-link>
                 <div class="offcanvas-cart-item-content">
                   <nuxt-link
-                    :to="{ path: '/product/' + item.id }"
+                    :to="{ path: '/product/' + item.productId }"
                     class="offcanvas-cart-item-link"
-                    >{{ item.title }}</nuxt-link
-                  >
+                    >{{ item.productName }}
+                    </nuxt-link>
+                    <span>{{ item.variation }} </span> 
                   <div class="offcanvas-cart-item-details">
                     <span class="offcanvas-cart-item-details-quantity"
-                      >{{ item.quantity }} x</span
+                      >{{ item.qty }} x</span
                     >
-                    <span
-                      v-if="item.discount"
-                      class="offcanvas-cart-item-details-price"
-                      >${{ discountedPrice(item) }}</span
-                    >
-                    <span v-else class="offcanvas-cart-item-details-price"
-                      >${{ item.price }}</span
+                   
+                    <span class="offcanvas-cart-item-details-price"
+                      >{{ item.price }} vnd</span
                     >
                   </div>
                 </div>
@@ -495,9 +493,9 @@
           </ul>
 
           <div class="offcanvas-cart-total-price">
-            <span class="offcanvas-cart-total-price-text">Subtotal:</span>
+            <span class="offcanvas-cart-total-price-text">Tổng tiền:</span>
             <span class="offcanvas-cart-total-price-value"
-              >${{ cartTotal }}</span
+              >{{ cartTotal }} vnd</span
             >
           </div>
 
@@ -506,14 +504,14 @@
               <nuxt-link
                 to="/cart"
                 class="theme-btn-one btn-black-overlay btn_md"
-                >View Cart</nuxt-link
+                >Xem giỏ hàng</nuxt-link
               >
             </li>
             <li>
               <nuxt-link
                 to="/my-account/checkout-1"
                 class="theme-btn-one btn-black-overlay btn_md"
-                >Checkout</nuxt-link
+                >Đặt hàng</nuxt-link
               >
             </li>
           </ul>
@@ -548,8 +546,9 @@
                   :to="{ path: '/product/' + item.id }"
                   class="offcanvas-wishlist-item-image-link"
                 >
+                <!-- :src="getImageUrl(item.images[0].src)" -->
                   <img
-                    :src="getImageUrl(item.images[0].src)"
+                    
                     alt="img"
                     class="offcanvas-wishlist-image"
                   />

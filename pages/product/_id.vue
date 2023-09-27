@@ -493,7 +493,7 @@ export default {
     addToCart: function (product, qty) {
       product.quantity = qty || 1;
       console.log("add cart: ", this.quantity);
-      
+
       if (this.productDetail.loaiBienThe == "BOTH") {
         if (!this.variationVal1 || !this.variationVal2) {
           alert("Vui lòng chọn phân loại sản phẩm!");
@@ -506,9 +506,16 @@ export default {
         );
         if (productVariation) {
           console.log("add variation: ", productVariation);
-          this.$store.dispatch("cart/addToCart", {id:productVariation.id, quantity: this.quantity});
+          this.$store.dispatch("cart/addToCart", {
+            id: productVariation.id,
+            quantity: this.quantity,
+            anh: productVariation.anh || productVariation.anhSpChinh,
+            productId: this.productDetail.id,
+            productName: this.productDetail.tieuDe,
+            price: this.productDetail.giaMoi,
+            variation: `Màu: ${productVariation.giaTriObj1.giaTri}, Size: ${productVariation.giaTriObj2.giaTri}`
+          });
         }
-
       } else {
         if (this.productDetail.loaiBienThe == "COLOR") {
           if (!this.variationVal1) {
@@ -521,7 +528,15 @@ export default {
           );
           if (productVariation) {
             console.log("add variation: ", productVariation);
-            this.$store.dispatch("cart/addToCart", {id:productVariation.id, quantity: this.quantity});
+            this.$store.dispatch("cart/addToCart", {
+              id: productVariation.id,
+              quantity: this.quantity,
+              anh: productVariation.anh || productVariation.anhSpChinh,
+              productId: this.productDetail.id,
+              productName: this.productDetail.tieuDe,
+              price: this.productDetail.giaMoi,
+              variation: `Màu: ${productVariation.giaTriObj1.giaTri}`
+            });
           }
         } else {
           if (!this.variationVal2) {
@@ -533,7 +548,15 @@ export default {
           );
           if (productVariation) {
             console.log("add variation: ", productVariation);
-            this.$store.dispatch("cart/addToCart", {id:productVariation.id, quantity: this.quantity});
+            this.$store.dispatch("cart/addToCart", {
+              id: productVariation.id,
+              quantity: this.quantity,
+              anh: productVariation.anh || productVariation.anhSpChinh,
+              productId: this.productDetail.id,
+              productName: this.productDetail.tieuDe,
+              price: this.productDetail.giaMoi,
+              variation: `Size: ${productVariation.giaTriObj2.giaTri}`
+            });
           }
         }
       }

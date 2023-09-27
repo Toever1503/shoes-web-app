@@ -7,6 +7,19 @@ const state = {
 if (!localStorage.getItem('cart')) {
   localStorage.setItem('cart', JSON.stringify([]));
 }
+else {
+  try {
+    state.cart = JSON.parse(localStorage.getItem('cart'));
+  } catch (error) {
+  }
+}
+
+const updateCartLocalstorage = () => {
+  // check logged user
+  if (!localStorage.getItem('loggedUser')) {
+    localStorage.setItem('cart', JSON.stringify(state.cart));
+  }
+};
 // getters
 const getters = {
   cartItems: (state) => {
@@ -19,7 +32,7 @@ const getters = {
   // },
   cartTotalAmount: (state) => {
     return state.cart.reduce((total, product) => {
-      return total + ((product.price - (product.price * product.discount / 100)) * product.quantity)
+      return total + (product.price * product.qty)
     }, 0)
   }
 }
@@ -43,17 +56,22 @@ const mutations = {
 
     const cartItem = state.cart.find(item => item.id === payload.id);
     if (cartItem) {
-      cartItem.quantity = payload.quantity
+      state.cart.forEach(item => {
+        if (item.id == cartItem.id)
+          item.qty = payload.quantity + item.qty;
+      });
     } else {
       state.cart.push({
         id: payload.id,
-        qty: payload.quantity
+        qty: payload.quantity,
+        anh: payload.anh.url,
+        productId: payload.productId,
+        productName: payload.productName,
+        price: payload.price,
+        variation: payload.variation,
       });
     };
-
-    // check logged user
-    // if (!localStorage.getItem('loggedUser'))
-    //   localStorage.setItem('cart', JSON.stringify(state.cart));
+    updateCartLocalstorage();
   },
   updateCartQuantity: (state, payload) => {
     // Calculate Product Stock Counts
@@ -76,11 +94,13 @@ const mutations = {
         }
         return true
       }
-    })
+    });
+    updateCartLocalstorage();
   },
   removeCartItem: (state, payload) => {
-    const index = state.cart.indexOf(payload)
-    state.cart.splice(index, 1)
+    const index = state.cart.indexOf(payload);
+    state.cart.splice(index, 1);
+    updateCartLocalstorage();
   }
 
 }
