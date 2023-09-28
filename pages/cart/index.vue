@@ -49,39 +49,40 @@
                         </button>
                       </td>
                       <td class="product_thumb">
-                        <nuxt-link :to="{ path: '/product/' + item.id }">
-                          <img
-                            :src="getImageUrl(item.images[0].src)"
-                            alt="img"
-                          />
+                        <nuxt-link :to="{ path: '/product/' + item.productId }">
+                          <img :src="item.anh" alt="img" />
                         </nuxt-link>
                       </td>
                       <td class="product_name">
-                        <nuxt-link :to="{ path: '/product/' + item.id }">{{
-                          item.title
-                        }}</nuxt-link>
+                        <nuxt-link :to="{ path: '/product/' + item.productId }">
+                          {{ item.productName }}
+                          <br />
+                          <p>
+                            {{ item.variation }}
+                          </p>
+                        </nuxt-link>
                       </td>
-                      <td class="product-price">
-                        ${{ discountedPrice(item) }}
-                      </td>
+                      <td class="product-price">{{ item.price }} vnd</td>
+
                       <td class="product_quantity">
-                        <label>Quantity</label>
                         <input
                           min="1"
                           max="100"
-                          v-model="item.quantity"
+                          v-model="item.qty"
                           type="number"
                         />
                       </td>
                       <td class="product_total">
-                        ${{ discountedPrice(item) * item.quantity }}
+                        {{ item.qty * item.price }} vnd
                       </td>
                     </tr>
                     <!-- End Cart Single Item-->
                   </tbody>
                   <tbody v-else>
                     <tr>
-                      <td class="border-0">Giỏ hàng hiện chưa có sản phẩm nào!</td>
+                      <td class="border-0">
+                        Giỏ hàng hiện chưa có sản phẩm nào!
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -94,10 +95,15 @@
               data-aos="fade-up"
               data-aos-delay="200"
             >
-            <h3>Mã giảm giá</h3>
+              <h3>Mã giảm giá</h3>
               <div class="coupon_inner">
                 <p>Vui lòng nhập mã giảm giá nếu bạn có.</p>
-                <input v-model="discountCode" class="mb-2" placeholder="Mã code" type="text" />
+                <input
+                  v-model="discountCode"
+                  class="mb-2"
+                  placeholder="Mã code"
+                  type="text"
+                />
                 <button
                   type="submit"
                   class="theme-btn-one btn-black-overlay btn_sm"
@@ -118,27 +124,32 @@
               <div class="coupon_inner">
                 <div class="cart_subtotal">
                   <p>Tổng tiền sản phẩm</p>
-                  <p class="cart_amount">${{ cartTotal }}</p>
+                  <p class="cart_amount">{{ cartTotal }} vnd</p>
                 </div>
-                <div class="cart_subtotal">
+                <div class="cart_subtotal discount">
                   <p>Giảm Giá</p>
-                  <p class="cart_amount"> $0</p>
+                  <p class="cart_amount">0 vnd</p>
                 </div>
                 <div class="cart_subtotal">
                   <p>Phí ship</p>
-                  <p class="cart_amount"> $25.00</p>
+                  <p class="cart_amount">
+                    {{ cartTotal > 500000 ? 'Miễn phí' : '30000 vnd' }}
+                  </p>
                 </div>
                 <!-- <a href="#">Calculate shipping</a> -->
 
                 <div class="cart_subtotal">
                   <p>Tổng tiền thanh toán</p>
-                  <p class="cart_amount">${{ cartTotal + 25 }}</p>
+                  <p class="cart_amount">
+                    {{ cartTotal > 500000 ? cartTotal : cartTotal + 30000 }} vnd
+                  </p>
                 </div>
                 <div class="checkout_btn">
-                  <nuxt-link
-                    to="/my-account/checkout-1"
+                  <span
+                    @click="onCheckoutCart"
+                    style="cursor: pointer"
                     class="theme-btn-one btn-black-overlay btn_sm"
-                    >Tiến hành đặt hàng</nuxt-link
+                    >Tiến hành đặt hàng</span
                   >
                 </div>
               </div>
@@ -188,7 +199,8 @@ export default {
   },
   methods: {
     getImageUrl(path) {
-      return require("@/assets/img/product-image/" + path);
+      // return require("@/assets/img/product-image/" + path);
+      return "";
     },
     // Discount Price
     discountedPrice(product) {
@@ -199,13 +211,14 @@ export default {
     removeCartItem: function (product) {
       this.$store.dispatch("cart/removeCartItem", product);
     },
-    checkDiscountCode(){
-      if(!this.discountCode)
-        alert("Vui lòng nhập mã giảm giá!");
-      else
-      alert("discount code: " + this.discountCode)
-    }
-    
+    checkDiscountCode() {
+      if (!this.discountCode) alert("Vui lòng nhập mã giảm giá!");
+      else alert("discount code: " + this.discountCode);
+    },
+
+    onCheckoutCart() {
+      this.$router.push("my-account/checkout-1");
+    },
   },
 
   // Page head() Title, description for SEO

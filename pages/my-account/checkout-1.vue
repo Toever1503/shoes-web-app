@@ -98,7 +98,9 @@
                           <span v-if="!$v.user.phone.required"
                             >Vui lòng nhập số điện thoại!</span
                           >
-                          <span v-if="!$v.user.phone.phoneValidator">Phone is invalid</span>
+                          <span v-if="!$v.user.phone.phoneValidator"
+                            >Phone is invalid</span
+                          >
                         </div>
                       </div>
                     </div>
@@ -130,8 +132,7 @@
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                       <div class="form-group">
-                        <label for="province">Tỉnh/TP(*)
-                        </label>
+                        <label for="province">Tỉnh/TP(*) </label>
                         <select
                           class="form-control first_null"
                           v-model="user.province"
@@ -139,10 +140,16 @@
                           :class="{
                             'is-invalid': submitted && $v.user.province.$error,
                           }"
+                          @change="onProvinceChange"
                         >
-                          <option value="">Select an option...</option>
-                          <option value="AX">usa</option>
-                          <option value="AF">Afghanistan</option>
+                          <option value="">Vui lòng chọn...</option>
+                          <option
+                            :value="`${item.code}##${item.name}`"
+                            :key="index"
+                            v-for="(item, index) in provinceList"
+                          >
+                            {{ item.name }}
+                          </option>
                         </select>
                         <div
                           v-if="submitted && $v.user.province.$error"
@@ -165,10 +172,16 @@
                           :class="{
                             'is-invalid': submitted && $v.user.district.$error,
                           }"
+                          @change="onDistrictChange"
                         >
-                          <option value="">Select an option...</option>
-                          <option value="AX">Aland Islands</option>
-                          <option value="AF">Afghanistan</option>
+                          <option value="">Vui lòng chọn...</option>
+                          <option
+                            :value="`${item.code}##${item.name}`"
+                            :key="index"
+                            v-for="(item, index) in districtList"
+                          >
+                            {{ item.name }}
+                          </option>
                         </select>
                         <div
                           v-if="submitted && $v.user.district.$error"
@@ -191,9 +204,14 @@
                             'is-invalid': submitted && $v.user.ward.$error,
                           }"
                         >
-                          <option value="">Select an option...</option>
-                          <option value="AX">Aland Islands</option>
-                          <option value="AF">Afghanistan</option>
+                          <option value="">Vui lòng chọn...</option>
+                          <option
+                            :value="`${item.code}##${item.name}`"
+                            :key="index"
+                            v-for="(item, index) in wardList"
+                          >
+                            {{ item.name }}
+                          </option>
                         </select>
                         <div
                           v-if="submitted && $v.user.ward.$error"
@@ -270,57 +288,55 @@
                     <thead>
                       <tr>
                         <th>Sản phẩm</th>
-                        <th>Tổng tiền</th>
+                        <th style="min-width: 200px">Tổng tiền</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      <tr v-for="(item, index) in cart" :key="index">
                         <td>
-                          Blue Dress For Woman
+                          {{ item.productName }}
+                          (<span style="color: #777c87">{{
+                            item.variation
+                          }}</span
+                          >)
+                          <br />
                           <span class="product-qty">x 2</span>
                         </td>
-                        <td>$90.00</td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Lether Gray Tuxedo
-                          <span class="product-qty">x 1</span>
-                        </td>
-                        <td>$55.00</td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Woman Full Sliv Dresss
-                          <span class="product-qty">x 3</span>
-                        </td>
-                        <td>$204.00</td>
+                        <td>{{ item.qty * item.price }} vnd</td>
                       </tr>
                     </tbody>
                     <tfoot>
                       <tr>
                         <th>Tổng tiền sản phẩm</th>
-                        <td class="product-subtotal">$349.00</td>
+                        <td class="product-subtotal">{{ cartTotal }} vnd</td>
                       </tr>
                       <tr>
                         <th>Phí ship</th>
-                        <td>Free Shipping</td>
+                        <td>
+                          {{ cartTotal > 500000 ? "Miễn phí" : "30000 vnd" }}
+                        </td>
                       </tr>
                       <tr>
                         <th>Tổng tiền thanh toán</th>
-                        <td class="product-subtotal">$349.00</td>
+                        <td class="product-subtotal">
+                          {{
+                            cartTotal > 500000 ? cartTotal : cartTotal + 30000
+                          }}
+                          vnd
+                        </td>
                       </tr>
                     </tfoot>
                   </table>
                 </div>
               </div>
-              
+
               <div class="order_review bg-white">
                 <div class="check-heading">
                   <h3>Hình Thức Thanh Toán</h3>
                 </div>
                 <div class="payment_method">
                   <div class="payment_option">
-                    <div class="custome-radio">
+                    <!-- <div class="custome-radio">
                       <input
                         class="form-check-input"
                         required=""
@@ -337,7 +353,7 @@
                         There are many variations of passages of Lorem Ipsum
                         available, but the majority have suffered alteration.
                       </p>
-                    </div>
+                    </div> -->
                     <div class="custome-radio">
                       <input
                         class="form-check-input"
@@ -386,9 +402,10 @@
 
 <script>
 import { required, email } from "vuelidate/lib/validators";
+import { mapGetters, mapActions } from "vuex";
 
-
-const phoneValidator = (value) => /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(value);
+const phoneValidator = (value) =>
+  /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(value);
 export default {
   name: "checkout-1",
 
@@ -417,9 +434,16 @@ export default {
         ward: "",
         faddress: "",
         messages: "",
-        isSavedAddress: false
+        isSavedAddress: false,
+        phuongThucTT: ''
       },
       submitted: false,
+
+      // custom
+      provinceList: [],
+      districtList: [],
+      wardList: [],
+      previousAddressId: undefined,
     };
   },
   validations: {
@@ -434,23 +458,74 @@ export default {
       faddress: { required },
     },
   },
-  mounted() {
+  computed: {
+    ...mapGetters({
+      cart: "cart/cartItems",
+      cartTotal: "cart/cartTotalAmount",
+    }),
+  },
+  async mounted() {
     // For scroll page top for every Route
     window.scrollTo(0, 0);
+    this.provinceList = await this.getProvinces({
+      p: undefined,
+    });
   },
   methods: {
+    ...mapActions({
+      getProvinces: "address/getProvinces",
+    }),
+    async onProvinceChange() {
+      this.districtList = [];
+      this.wardList = [];
+      this.user.district = "";
+      this.user.ward = "";
+      if (this.user.province.split("##").length == 2) {
+        const province = await this.getProvinces({
+          p: this.user.province.split("##")[0],
+        });
+        this.districtList = province[0].districts;
+        console.log("on province change: ", province[0]);
+      }
+    },
+    async onDistrictChange() {
+      this.wardList = [];
+      this.user.ward = "";
+      if (this.user.district.split("##").length == 2) {
+        const district = this.districtList.filter(
+          (item) => this.user.district.split("##")[0] == item.code
+        );
+        this.wardList = district[0].wards;
+        console.log("on district change: ", district[0]);
+      }
+    },
     handleSubmit(e) {
       this.submitted = true;
 
       // stop here if form is invalid
       this.$v.$touch();
       if (this.$v.$invalid) {
-        console.log(this.$v)
-        alert("pls check agains")
+        console.log(this.$v);
+        alert("pls check agains");
         return;
       }
-      alert("Order placed Successfully! Thank you for shopping with us.");
-      this.$router.push("trang-thai-thanh-toan")
+
+      const payload = {
+        gioHangItemIds: this.cart.map(item => item.id),
+        phuongThucTT: "",
+        note: this.user.note,
+        hoTenNguoiNhan: this.user.fname,
+        soDienThoaiNhanHang: this.user.phone,
+        diaChiNhanHang: undefined,
+        diaChiId: undefined,
+      };
+      if (this.previousAddressId) payload.diaChiId = this.previousAddressId;
+      else
+        payload.diaChiNhanHang = `${this.user.faddress}__${this.user.province}__${this.user.district}__${this.user.ward}`;
+
+      console.log('order payload: ', payload)
+      // alert("Order placed Successfully! Thank you for shopping with us.");
+      // this.$router.push("trang-thai-thanh-toan");
     },
   },
 
