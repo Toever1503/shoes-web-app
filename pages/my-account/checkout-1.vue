@@ -29,7 +29,7 @@
                 </div>
                 <div class="check-out-form">
                   <div class="row">
-                    <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                       <div class="form-group">
                         <label for="fname">Tên Người Nhận(*)</label>
                         <input
@@ -52,7 +52,7 @@
                       </div>
                     </div>
 
-                    <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                    <!-- <div class="col-lg-6 col-md-12 col-sm-12 col-12">
                       <div class="form-group">
                         <label for="lname">Họ(*)</label>
                         <input
@@ -73,7 +73,7 @@
                           Vui lòng nhập họ của người nhận!
                         </div>
                       </div>
-                    </div>
+                    </div> -->
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                       <div class="form-group">
@@ -356,35 +356,32 @@
                     </div> -->
                     <div class="custome-radio">
                       <input
+                        v-model="user.phuongThucTT"
                         class="form-check-input"
                         type="radio"
                         name="payment_option"
                         id="exampleRadios4"
-                        value="option4"
+                        value="COD"
                       />
                       <label class="form-check-label" for="exampleRadios4"
-                        >Quét mã VNPAY</label
+                        >Thanh toán khi nhận hàng</label
                       >
-                      <p data-method="option4" class="payment-text">
-                        Please send your cheque to Store Name, Store Street,
-                        Store Town, Store State / County, Store Postcode.
+                      <p class="payment-text">
+                        Bạn sẽ trả tiền sau khi nhận hàng.
                       </p>
                     </div>
                     <div class="custome-radio">
                       <input
+                        v-model="user.phuongThucTT"
                         class="form-check-input"
                         type="radio"
                         name="payment_option"
                         id="exampleRadios5"
-                        value="option5"
+                        value="VNPAY"
                       />
                       <label class="form-check-label" for="exampleRadios5"
-                        >Cod</label
+                        >Quét mã VNPAY</label
                       >
-                      <p data-method="option5" class="payment-text">
-                        Pay via PayPal; you can pay with your credit card if you
-                        don't have a PayPal account.
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -403,6 +400,7 @@
 <script>
 import { required, email } from "vuelidate/lib/validators";
 import { mapGetters, mapActions } from "vuex";
+import PaymentService from "../../services/PaymentService";
 
 const phoneValidator = (value) =>
   /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(value);
@@ -435,7 +433,7 @@ export default {
         faddress: "",
         messages: "",
         isSavedAddress: false,
-        phuongThucTT: ''
+        phuongThucTT: "COD",
       },
       submitted: false,
 
@@ -449,7 +447,7 @@ export default {
   validations: {
     user: {
       fname: { required },
-      lname: { required },
+      // lname: { required },
       phone: { required, phoneValidator },
       email: { email },
       province: { required },
@@ -500,8 +498,6 @@ export default {
       }
     },
     handleSubmit(e) {
-      this.submitted = true;
-
       // stop here if form is invalid
       this.$v.$touch();
       if (this.$v.$invalid) {
@@ -510,8 +506,11 @@ export default {
         return;
       }
 
+      if (this.submitted) return;
+      this.submitted = true;
+
       const payload = {
-        gioHangItemIds: this.cart.map(item => item.id),
+        gioHangItemIds: this.cart.map((item) => item.id),
         phuongThucTT: "",
         note: this.user.note,
         hoTenNguoiNhan: this.user.fname,
@@ -519,13 +518,22 @@ export default {
         diaChiNhanHang: undefined,
         diaChiId: undefined,
       };
+      
       if (this.previousAddressId) payload.diaChiId = this.previousAddressId;
       else
         payload.diaChiNhanHang = `${this.user.faddress}__${this.user.province}__${this.user.district}__${this.user.ward}`;
 
-      console.log('order payload: ', payload)
-      // alert("Order placed Successfully! Thank you for shopping with us.");
-      // this.$router.push("trang-thai-thanh-toan");
+      console.log("order payload: ", payload);
+      PaymentService.checkout(payload)
+        .then((res) => {
+          console.log("data hang ok:", res);
+          alert("Order placed Successfully! Thank you for shopping with us.");
+          this.$router.push("trang-thai-thanh-toan");
+        })
+        .catch((err) => {
+          console.log("checkout failed: ", err);
+        })
+        .finally(() => (this.submitted = false));
     },
   },
 
