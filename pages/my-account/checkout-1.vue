@@ -261,19 +261,7 @@
                       </div>
                     </div>
 
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                      <div class="form-check">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="materialUnchecked"
-                          v-model="user.isSavedAddress"
-                        />
-                        <label class="form-check-label" for="materialUnchecked"
-                          >Lưu vào danh sách địa chỉ của tôi</label
-                        >
-                      </div>
-                    </div>
+                    
                   </div>
                 </div>
               </div>
@@ -432,7 +420,6 @@ export default {
         ward: "",
         faddress: "",
         messages: "",
-        isSavedAddress: false,
         phuongThucTT: "COD",
       },
       submitted: false,
@@ -510,8 +497,7 @@ export default {
       this.submitted = true;
 
       const payload = {
-        gioHangItemIds: this.cart.map((item) => item.id),
-        phuongThucTT: "",
+        phuongThucTT: this.user.phuongThucTT,
         note: this.user.note,
         hoTenNguoiNhan: this.user.fname,
         soDienThoaiNhanHang: this.user.phone,
@@ -523,12 +509,17 @@ export default {
       else
         payload.diaChiNhanHang = `${this.user.faddress}__${this.user.province}__${this.user.district}__${this.user.ward}`;
 
+      if(localStorage.getItem('loggedUser'))
+          payload.gioHangItemIds= this.cart.map((item) => item.id);
+      else 
+        payload.gioHangTamThoiReqDto = this.cart.map((item) => ({sanPhamBienThe: item.id, soLuong: item.qty}));
       console.log("order payload: ", payload);
+
       PaymentService.checkout(payload)
         .then((res) => {
           console.log("data hang ok:", res);
           alert("Order placed Successfully! Thank you for shopping with us.");
-          this.$router.push("trang-thai-thanh-toan");
+          this.$router.push("trang-thai-thanh-toan?id="+res.data.id);
         })
         .catch((err) => {
           console.log("checkout failed: ", err);

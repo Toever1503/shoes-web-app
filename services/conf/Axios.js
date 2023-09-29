@@ -23,10 +23,10 @@ function getInstance() {
         return response;
     },
         async (error) => {
-            if (error.response.status === 401) {
-                localStorage.removeItem('token');
-                window.location.href = '/signin';
-            }
+            // if (error.response.status === 401) {
+            //     localStorage.removeItem('token');
+            //     window.location.href = '/signin';
+            // }
 
             // if (error.response.data)
             //     if (error.response.data.code === "code-4") {
