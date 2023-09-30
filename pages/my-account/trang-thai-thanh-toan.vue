@@ -17,7 +17,7 @@
       </div>
     </section>
 
-    <section class="p-5 text-center" v-if="orderDetail">
+    <section class="p-5 text-center" v-if="orderDetail && status == 'SUCCESS'">
       <h3>Đơn hàng đã được tạo thành công!</h3>
       <p class="mb-3">
         Mã đơn hàng của bạn là: #{{ orderDetail.maDonHang }}
@@ -57,7 +57,9 @@
               <tr>
                 <th>Tổng tiền sản phẩm</th>
                 <td></td>
-                <td class="product-subtotal" >{{ orderDetail.tongTienSp }} vnd</td>
+                <td class="product-subtotal">
+                  {{ orderDetail.tongTienSp }} vnd
+                </td>
               </tr>
               <tr>
                 <th>Phí ship</th>
@@ -72,7 +74,7 @@
               <tr>
                 <th>Tổng tiền thanh toán</th>
                 <td></td>
-                <td class="product-subtotal" >
+                <td class="product-subtotal">
                   {{ orderDetail.tongGiaCuoiCung }} vnd
                 </td>
               </tr>
@@ -81,6 +83,17 @@
         </div>
       </div>
 
+      <button class="theme-btn-one btn-black-overlay btn_sm">
+        <router-link to="/"> Tiếp Tục Mua Sắm </router-link>
+      </button>
+    </section>
+
+
+    <section class="p-5 text-center" v-if="status == 'FAILED'">
+      <h3>Thanh toán thất bại!</h3>
+      <p class="mb-3 mt-2">
+        Vui lòng thử thanh toán lại!
+      </p>
       <button class="theme-btn-one btn-black-overlay btn_sm">
         <router-link to="/"> Tiếp Tục Mua Sắm </router-link>
       </button>
@@ -111,22 +124,33 @@ export default {
 
       // custom by shiki
       orderDetail: undefined,
+      status: ""
     };
   },
   mounted() {
     // For scroll page top for every Route
     window.scrollTo(0, 0);
-    if (this.$route.query.id)
-      PaymentService.getDetailOrder(this.$route.query.id)
-        .then((res) => {
-          console.log("detail order: ", res.data);
-          this.orderDetail = res.data;
-        })
-        .catch((err) => {
-          console.log("get detail order failed: ", err);
-          this.$router.push("/404");
-        });
-    else this.$router.push("/404");
+
+    if (!this.$route.query.status) this.$router.push("/404");
+    else {
+      this.status = this.$route.query.status;
+      if (this.$route.query.status == "SUCCESS") {
+        if (this.$route.query.id)
+          PaymentService.getDetailOrder(this.$route.query.id)
+            .then((res) => {
+              console.log("detail order: ", res.data);
+              this.orderDetail = res.data;
+              this.$store.dispatch("cart/forceResetCartItem", null);
+            })
+            .catch((err) => {
+              console.log("get detail order failed: ", err);
+              this.$router.push("/404");
+            });
+        else this.$router.push("/404");
+      } else if (this.$route.query.status == "FAILED") {
+       
+      } else this.$router.push("/404");
+    }
   },
   methods: {},
 

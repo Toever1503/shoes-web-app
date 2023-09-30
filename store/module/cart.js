@@ -1,4 +1,5 @@
 import products from '../../data/products'
+import CartService from '../../services/CartService';
 
 const state = {
   products: products.data,
@@ -20,6 +21,20 @@ const updateCartLocalstorage = () => {
     localStorage.setItem('cart', JSON.stringify(state.cart));
   }
 };
+
+const addUpdateCartToDB = (context, payload) => {
+  CartService.addProduct({
+    sanPhamBienThe: payload.id,
+    soLuong: payload.quantity
+  })
+    .then(() => {
+      context.commit('addToCart', payload);
+    })
+    .catch(err => {
+      console.log("user.add cart failed: ", err);
+      alert("add item to cart failed!");
+    });
+};
 // getters
 const getters = {
   cartItems: (state) => {
@@ -39,13 +54,31 @@ const getters = {
 // actions
 const actions = {
   addToCart: (context, payload) => {
-    context.commit('addToCart', payload)
+    console.log("cart store-add: ", payload);
+    if (localStorage.getItem("loggedUser"))
+      addUpdateCartToDB(context, payload);
+    else
+      context.commit('addToCart', payload);
   },
   updateCartQuantity: (context, payload) => {
-    context.commit('updateCartQuantity', payload)
+    if (localStorage.getItem("loggedUser"))
+      addUpdateCartToDB(context, payload);
+    else
+      context.commit('updateCartQuantity', payload)
   },
   removeCartItem: (context, payload) => {
-    context.commit('removeCartItem', payload)
+    if (localStorage.getItem("loggedUser"))
+      CartService.removeProduct(payload.id)
+        .then(() => { })
+        .catch(err => {
+          console.log("user.cart remove failed: ", err);
+          alert("remove item failed!");
+        });
+    else
+      context.commit('removeCartItem', payload)
+  },
+  forceResetCartItem:  (context, payload) => {
+    context.commit('forceResetCartItem', payload)
   }
 }
 
@@ -100,6 +133,10 @@ const mutations = {
   removeCartItem: (state, payload) => {
     const index = state.cart.indexOf(payload);
     state.cart.splice(index, 1);
+    updateCartLocalstorage();
+  },
+  forceResetCartItem: (state, payload) => {
+    state.cart = [];
     updateCartLocalstorage();
   }
 

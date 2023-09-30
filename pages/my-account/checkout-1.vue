@@ -260,8 +260,6 @@
                         ></textarea>
                       </div>
                     </div>
-
-                    
                   </div>
                 </div>
               </div>
@@ -288,7 +286,7 @@
                           }}</span
                           >)
                           <br />
-                          <span class="product-qty">x 2</span>
+                          <span class="product-qty">x {{ item.qty }}</span>
                         </td>
                         <td>{{ item.qty * item.price }} vnd</td>
                       </tr>
@@ -504,25 +502,30 @@ export default {
         diaChiNhanHang: undefined,
         diaChiId: undefined,
       };
-      
+
       if (this.previousAddressId) payload.diaChiId = this.previousAddressId;
       else
         payload.diaChiNhanHang = `${this.user.faddress}__${this.user.province}__${this.user.district}__${this.user.ward}`;
 
-      if(localStorage.getItem('loggedUser'))
-          payload.gioHangItemIds= this.cart.map((item) => item.id);
-      else 
-        payload.gioHangTamThoiReqDto = this.cart.map((item) => ({sanPhamBienThe: item.id, soLuong: item.qty}));
+      // if (localStorage.getItem("loggedUser"))
+      //   payload.gioHangItemIds = this.cart.map((item) => item.id);
+      // else
+        payload.gioHangTamThoiReqDto = this.cart.map((item) => ({
+          sanPhamBienThe: item.id,
+          soLuong: item.qty,
+        }));
       console.log("order payload: ", payload);
 
       PaymentService.checkout(payload)
         .then((res) => {
-          console.log("data hang ok:", res);
-          alert("Order placed Successfully! Thank you for shopping with us.");
-          this.$router.push("trang-thai-thanh-toan?id="+res.data.id);
+          console.log("data hang ok:", res.data);
+          if (this.user.phuongThucTT == "VNPAY")
+            location.replace(res.data.urlPay);
+          else this.$router.push("trang-thai-thanh-toan?status=SUCCESS&id=" + res.data.id);
         })
         .catch((err) => {
           console.log("checkout failed: ", err);
+          alert("Đặt hàngg thất bại. Vui lòng thử lại sau");
         })
         .finally(() => (this.submitted = false));
     },

@@ -12,9 +12,9 @@ function getInstance() {
 
     //hook interceptor cài ở đây
     axiosInstance.interceptors.request.use((config) => {
-        const token = getCookie('token');
+        const token = localStorage.getItem('loggedUser');
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers["x-api-token"] = token;
         }
         return config;
     })

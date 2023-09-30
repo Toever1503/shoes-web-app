@@ -491,6 +491,10 @@ export default {
     },
     // add to cart
     addToCart: function (product, qty) {
+      if (this.variationStockCnt == 0) {
+        alert("Sản phẩm hiện tại đang hết!");
+        return;
+      }
       product.quantity = qty || 1;
       console.log("add cart: ", this.quantity);
 
@@ -504,6 +508,7 @@ export default {
             item.giatri1 == this.variationVal1 &&
             item.giatri2 == this.variationVal2
         );
+
         if (productVariation) {
           console.log("add variation: ", productVariation);
           this.$store.dispatch("cart/addToCart", {
@@ -513,11 +518,12 @@ export default {
             productId: this.productDetail.id,
             productName: this.productDetail.tieuDe,
             price: this.productDetail.giaMoi,
-            variation: `Màu: ${productVariation.giaTriObj1.giaTri}, Size: ${productVariation.giaTriObj2.giaTri}`
+            variation: `Màu: ${productVariation.giaTriObj1.giaTri}, Size: ${productVariation.giaTriObj2.giaTri}`,
           });
         }
       } else {
         if (this.productDetail.loaiBienThe == "COLOR") {
+          // for color
           if (!this.variationVal1) {
             alert("Vui lòng chọn phân loại sản phẩm!");
             return;
@@ -535,10 +541,11 @@ export default {
               productId: this.productDetail.id,
               productName: this.productDetail.tieuDe,
               price: this.productDetail.giaMoi,
-              variation: `Màu: ${productVariation.giaTriObj1.giaTri}`
+              variation: `Màu: ${productVariation.giaTriObj1.giaTri}`,
             });
           }
         } else {
+          // for size
           if (!this.variationVal2) {
             alert("Vui lòng chọn phân loại sản phẩm!");
             return;
@@ -555,7 +562,7 @@ export default {
               productId: this.productDetail.id,
               productName: this.productDetail.tieuDe,
               price: this.productDetail.giaMoi,
-              variation: `Size: ${productVariation.giaTriObj2.giaTri}`
+              variation: `Size: ${productVariation.giaTriObj2.giaTri}`,
             });
           }
         }
